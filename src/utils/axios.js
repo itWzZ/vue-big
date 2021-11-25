@@ -1,9 +1,12 @@
 import axios from 'axios'
-import { Loading } from 'element-ui'
+import { Loading, Message } from 'element-ui'
+import store from '../store/index.js'
+import router from '../router/index.js'
+
+// 设置公共url 前缀
 var request = axios.create({
-  // baseURL: 'https://www.fastmock.site/mock/37d3b9f13a48d528a9339fbed1b81bd5/book/api/books',
   baseURL: 'http://www.liulongbin.top:3008',
-  timeout: 1000,
+  timeout: 5000,
   headers: { 'X-Custom-Header': 'foobar' }
 })
 // 添加请求拦截器
@@ -11,6 +14,11 @@ let loadingInstance = null
 request.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
+    // 设置只要请求地址有/my 的话 就加上仓库中的token
+    if (config.url.startsWith('/my')) {
+      config.headers.Authorization = store.state.token
+    }
+    // 请求发出时加载动画开始
     loadingInstance = Loading.service({
       fullscreen: true,
       background: 'rgba(0, 0, 0, 0.7)',
@@ -29,10 +37,20 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   function (response) {
     // 对响应数据做点什么
+    // 请求响应回来时关闭加载动画
     loadingInstance.close()
     return response
   },
   function (error) {
+    loadingInstance.close()
+    Message.error('登录失败!')
+    console.log(error.response)
+    if (error.response.status === 401) {
+      store.commit('delToken')
+      localStorage.clear()
+      router.push('/login')
+    }
+
     // 对响应错误做点什么
     return Promise.reject(error)
   }

@@ -16,7 +16,7 @@
           <el-submenu index="1">
             <template slot="title">
               <!-- 头像 -->
-              <img src="../../assets/logo.png" alt="" class="avatar" />
+              <img :src="userInfo.user_pic" alt="" class="avatar" />
               <span>个人中心</span>
             </template>
             <el-menu-item index="1-1"
@@ -36,26 +36,83 @@
       </el-header>
       <el-container>
         <!-- 侧边栏区域 -->
-        <el-aside width="200px">Aside</el-aside>
+        <el-aside width="200px">
+          <div class="aside-info">
+            <img :src="userInfo.user_pic" alt="" class="avatar" />
+            <span>欢迎你 {{ userInfo.nickname }}</span>
+          </div>
+          <el-menu
+            class="el-menu-vertical-demo"
+            @open="handleOpen"
+            @close="handleClose"
+            background-color="#23262e"
+            text-color="#fff"
+            active-text-color="#ffd04b"
+            unique-opened
+            router
+            :default-active="$route.fullPath"
+          >
+            <div v-for="(item, index) in menus" :key="index">
+              <el-menu-item :index="item.indexPath" v-if="!item.children">
+                <i :class="item.icon"></i>
+                <span slot="title">{{ item.title }}</span>
+              </el-menu-item>
+
+              <el-submenu :index="item.indexPath" v-else>
+                <template slot="title">
+                  <i :class="item.icon"></i>
+                  <span>{{ item.title }}</span>
+                </template>
+
+                <el-menu-item
+                  :index="item2.indexPath"
+                  v-for="(item2, index2) in item.children"
+                  :key="index2"
+                  ><i :class="item2.icon"></i>{{ item2.title }}</el-menu-item
+                >
+              </el-submenu>
+            </div>
+
+            <!-- 导航二
+            <el-submenu index="3">
+              <template slot="title">
+                <i class="el-icon-location"></i>
+                <span>个人中心</span>
+              </template>
+              <el-menu-item index="/userinfo9 mnm">基本资料</el-menu-item>
+              <el-menu-item index="3-2">更换头像</el-menu-item>
+              <el-menu-item index="3-2">重置密码</el-menu-item>
+            </el-submenu> -->
+          </el-menu>
+        </el-aside>
         <el-container>
           <!-- 页面主体区域 -->
-          <el-main> Main.vue后台主页 </el-main>
+          <el-main> <router-view></router-view></el-main>
           <!-- 底部 footer 区域 -->
-          <el-footer>© www.itheima.com - 黑马程序员</el-footer>
+          <el-footer> @itWzZ</el-footer>
         </el-container>
       </el-container>
     </el-container>
   </div>
 </template>
 <script>
+import { menusApi } from '../../api/index.js'
+import { mapState } from 'vuex'
 export default {
   data () {
-    return {}
+    return {
+      menus: []
+    }
   },
+
   created () {
+    console.log(this.userInfo)
     this.$store.dispatch('userInfoHandle')
+    this.getMenus()
   },
-  computed: {},
+  computed: {
+    ...mapState(['userInfo'])
+  },
   methods: {
     async logOut () {
       const sesult = await this.$confirm('您要退出首页, 是否继续?', '提示', {
@@ -70,6 +127,16 @@ export default {
         localStorage.clear()
         this.$router.push('/login')
       }
+    },
+    handleOpen (key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleClose (key, keyPath) {
+      console.log(key, keyPath)
+    },
+    async getMenus () {
+      const res = await menusApi()
+      this.menus = res.data.data
     }
   }
 }
@@ -77,20 +144,18 @@ export default {
 <style lang='less' scoped>
 .main-container {
   height: 100%;
+
   .el-header,
   .el-aside {
     background-color: #23262e;
   }
+
   .el-header {
     padding: 0;
     display: flex;
     justify-content: space-between;
   }
-  .el-main {
-    overflow-y: scroll;
-    height: 0;
-    background-color: #f2f2f2;
-  }
+
   .el-footer {
     background-color: #eee;
     font-size: 12px;
@@ -99,15 +164,27 @@ export default {
     align-items: center;
   }
 }
-
+.aside-info {
+  width: 200px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #000;
+  span {
+    color: #fff;
+    font-size: 12px;
+  }
+}
 .avatar {
   border-radius: 50%;
-  width: 35px;
-  height: 35px;
+  width: 55px;
+  height: 55px;
   background-color: #fff;
   margin-right: 10px;
   object-fit: cover;
 }
+
 .el-container {
   height: 100vh;
 }
