@@ -1,7 +1,7 @@
 import request from '../utils/axios.js'
 
 /**
- * @description: 登录接口
+ * @description: 登录账号
  * @return {Promise}
  **/
 export const loginApi = (data) => {
@@ -13,7 +13,7 @@ export const loginApi = (data) => {
   })
 }
 /**
- * @description: 注册接口
+ * @description: 注册账号
  * @return {Promise}
  **/
 export const regApi = (data) => {
@@ -24,7 +24,7 @@ export const regApi = (data) => {
   })
 }
 /**
- * @description: 获取用户信息接口
+ * @description: 获取用户信息
  * @return {Promise}
  **/
 export const userinfoApi = (data) => {
@@ -34,7 +34,7 @@ export const userinfoApi = (data) => {
   })
 }
 /**
- * @description: 获取导航栏信息接口
+ * @description: 获取导航栏信息
  * @return {Promise}
  **/
 export const menusApi = () => {
@@ -63,5 +63,18 @@ export const upDatePwdApi = (data) => {
     method: 'PATCH',
     url: '/my/updatepwd',
     data
+  })
+}
+/**
+ * @description: 更换头像
+ * @return {Promise}
+ **/
+export const upDateAvatarApi = (data1) => {
+  return request({
+    method: 'PATCH',
+    url: '/my/update/avatar',
+    data: {
+      avatar: data1
+    }
   })
 }

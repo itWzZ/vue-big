@@ -23,7 +23,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm">修改密码</el-button>
+          <el-button type="primary" @click="submitForm">提交</el-button>
           <el-button @click="resetForm">重置</el-button>
         </el-form-item>
       </el-form>
@@ -63,6 +63,11 @@ export default {
               message: '成功'
             })
             this.$store.dispatch('userInfoHandle')
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.data.message
+            })
           }
         }
       })

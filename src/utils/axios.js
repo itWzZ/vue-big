@@ -29,6 +29,10 @@ request.interceptors.request.use(
   },
   function (error) {
     // 对请求错误做些什么
+    Message({
+      message: error,
+      type: 'warning'
+    })
     return Promise.reject(error)
   }
 )
@@ -43,8 +47,11 @@ request.interceptors.response.use(
   },
   function (error) {
     loadingInstance.close()
-    Message.error('登录失败!')
-    console.log(error.response)
+    Message({
+      message: error.response.data.message,
+      type: 'warning'
+    })
+    // console.log(error.response.data.message)
     if (error.response.status === 401) {
       store.commit('delToken')
       localStorage.clear()

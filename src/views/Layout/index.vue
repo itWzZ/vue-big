@@ -16,7 +16,11 @@
           <el-submenu index="1">
             <template slot="title">
               <!-- 头像 -->
-              <img :src="userInfo.user_pic" alt="" class="avatar" />
+              <img
+                :src="userInfo.user_pic || defaultImg"
+                alt=""
+                class="avatar"
+              />
               <span>个人中心</span>
             </template>
             <el-menu-item index="1-1"
@@ -36,9 +40,9 @@
       </el-header>
       <el-container>
         <!-- 侧边栏区域 -->
-        <el-aside width="200px">
+        <el-aside style="width: 200px">
           <div class="aside-info">
-            <img :src="userInfo.user_pic" alt="" class="avatar" />
+            <img :src="userInfo.user_pic || defaultImg" alt="" class="avatar" />
             <span>欢迎你 {{ userInfo.nickname }}</span>
           </div>
           <el-menu
@@ -58,8 +62,8 @@
                 <span slot="title">{{ item.title }}</span>
               </el-menu-item>
 
-              <el-submenu :index="item.indexPath" v-else>
-                <template slot="title">
+              <el-submenu :index="item.indexPath" v-else style="width: 200px">
+                <template slot="title" style="width: 160px">
                   <i :class="item.icon"></i>
                   <span>{{ item.title }}</span>
                 </template>
@@ -98,15 +102,16 @@
 <script>
 import { menusApi } from '../../api/index.js'
 import { mapState } from 'vuex'
+import defaultImg from '@/assets/images/el.jpeg'
 export default {
   data () {
     return {
-      menus: []
+      menus: [],
+      defaultImg: defaultImg
     }
   },
 
   created () {
-    console.log(this.userInfo)
     this.$store.dispatch('userInfoHandle')
     this.getMenus()
   },
@@ -129,10 +134,10 @@ export default {
       }
     },
     handleOpen (key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     },
     handleClose (key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     },
     async getMenus () {
       const res = await menusApi()
@@ -144,7 +149,6 @@ export default {
 <style lang='less' scoped>
 .main-container {
   height: 100%;
-
   .el-header,
   .el-aside {
     background-color: #23262e;
@@ -176,6 +180,11 @@ export default {
     font-size: 12px;
   }
 }
+.el-menu-item,
+is-active,
+.el-submenu__title {
+  width: 200px;
+}
 .avatar {
   border-radius: 50%;
   width: 55px;
@@ -184,7 +193,9 @@ export default {
   margin-right: 10px;
   object-fit: cover;
 }
-
+.el-menu-item:hover {
+  background-color: #909399 !important;
+}
 .el-container {
   height: 100vh;
 }
