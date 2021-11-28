@@ -47,3 +47,15 @@ export const upDateArtListApi = (data) => {
     data
   })
 }
+/**
+ * @description: 获取文章的列表数据
+ * @return {Promise}
+ * @params: 分页条数
+ **/
+export const getCateInfoApi = (params) => {
+  return request({
+    method: 'GET',
+    url: '/my/article/list',
+    params
+  })
+}

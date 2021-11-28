@@ -33,7 +33,7 @@
               ><i class="el-icon-key"></i>重置密码</el-menu-item
             >
           </el-submenu>
-          <el-menu-item index="2" @click.native="logOut"
+          <el-menu-item index="2" @click.native="logOut" style="width: 89px"
             ><i class="el-icon-switch-button"></i>退出</el-menu-item
           >
         </el-menu>
@@ -193,9 +193,7 @@ is-active,
   margin-right: 10px;
   object-fit: cover;
 }
-.el-menu-item:hover {
-  background-color: #909399 !important;
-}
+
 .el-container {
   height: 100vh;
 }

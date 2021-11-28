@@ -21,9 +21,9 @@ request.interceptors.request.use(
     // 请求发出时加载动画开始
     loadingInstance = Loading.service({
       fullscreen: true,
-      background: 'rgba(0, 0, 0, 0.7)',
-      text: '加载中...',
-      spinner: 'el-icon-loading'
+      background: 'rgba(225, 225, 225, 0.4)',
+      lock: true,
+      body: true
     })
     return config
   },

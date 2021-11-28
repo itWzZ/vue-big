@@ -13,10 +13,10 @@
       </div>
       <!-- 添加按钮结束 -->
       <!-- 表格开始 -->
-      <el-table :data="tableData" style="width: 100%" stripe>
-        <el-table-column label="序号" width="180" prop="id"> </el-table-column>
+      <el-table :data="tableData" style="width: 100%" border stripe>
+        <el-table-column label="序号" width="100" prop="id"> </el-table-column>
         <el-table-column label="分类名称" prop="cate_name"> </el-table-column>
-        <el-table-column label="分类别名" width="180" prop="cate_alias">
+        <el-table-column label="分类别名" prop="cate_alias">
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -36,8 +36,7 @@
     </el-card>
     <!-- 添加分类开始 -->
     <el-dialog
-      @close="close"
-      width="40%"
+      width="30%"
       :title="(isEdit ? '编辑' : '添加') + '文章分类'"
       :visible.sync="dialogFormVisible"
     >
@@ -126,19 +125,15 @@ export default {
   },
   computed: {},
   methods: {
-    close () {
-      this.$refs.form.resetFields()
+    addCate () {
       this.form = {
         cate_name: '',
         cate_alias: ''
       }
-    },
-    addCate () {
       this.dialogFormVisible = true
       this.isEdit = false
     },
     doAdd () {
-      console.log(11)
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           const res = await addArtListApi(this.form)
@@ -149,9 +144,7 @@ export default {
               message: res.data.message
             })
             this.getArt()
-
             this.dialogFormVisible = false
-            this.close()
           } else {
             this.$message({
               type: 'error',
@@ -165,14 +158,12 @@ export default {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           const res = await upDateArtListApi(this.form)
-          console.log(res)
           if (res.data.code === 0) {
             this.$message({
               type: 'success',
               message: res.data.message
             })
             this.getArt()
-            this.close()
             this.dialogFormVisible = false
           } else {
             this.$message({
@@ -186,19 +177,35 @@ export default {
     flag () {
       this.isEdit ? this.doEdit() : this.doAdd()
     },
-
     async getArt () {
       const res = await getArtListApi()
       this.tableData = res.data.data
     },
     handleEdit (index, row) {
+      this.form = {
+        cate_name: '',
+        cate_alias: ''
+      }
+      if (row.id === 1 || row.id === 2) {
+        this.$message({
+          type: 'error',
+          message: ' 管理员不允许删除这个分类'
+        })
+        return false
+      }
       this.form = JSON.parse(JSON.stringify(row))
       this.dialogFormVisible = true
       this.isEdit = true
-      console.log(index, row)
     },
 
     handleDelete (row) {
+      if (row.id === 1 || row.id === 2) {
+        this.$message({
+          type: 'error',
+          message: ' 管理员不允许删除这个分类'
+        })
+        return false
+      }
       this.$confirm('此操作将永久删除该分类, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
