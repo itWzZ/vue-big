@@ -11,6 +11,7 @@
           mode="horizontal"
           background-color="#23262E"
           text-color="#fff"
+          active-text-color="#409eff"
         >
           <el-submenu index="1">
             <template slot="title">
