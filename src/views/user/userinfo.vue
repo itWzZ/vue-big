@@ -49,7 +49,9 @@ export default {
     }
   },
   created () {
-    this.ruleForm = JSON.parse(JSON.stringify(this.$store.state.userInfo))
+    setTimeout(() => {
+      this.ruleForm = JSON.parse(JSON.stringify(this.$store.state.userInfo))
+    }, 150)
   },
   computed: {},
   methods: {

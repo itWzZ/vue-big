@@ -11,7 +11,6 @@
           mode="horizontal"
           background-color="#23262E"
           text-color="#fff"
-          active-text-color="#409EFF"
         >
           <el-submenu index="1">
             <template slot="title">
@@ -23,18 +22,22 @@
               />
               <span>个人中心</span>
             </template>
-            <el-menu-item index="1-1"
+            <el-menu-item index="1-1" @click="$router.push('user-info')"
               ><i class="el-icon-s-operation"></i>基本资料</el-menu-item
             >
-            <el-menu-item index="1-2"
+            <el-menu-item index="1-2" @click="$router.push('user-avatar')"
               ><i class="el-icon-camera"></i>更换头像</el-menu-item
             >
-            <el-menu-item index="1-3"
+            <el-menu-item index="1-3" @click="$router.push('user-pwd')"
               ><i class="el-icon-key"></i>重置密码</el-menu-item
             >
           </el-submenu>
-          <el-menu-item index="2" @click.native="logOut" style="width: 89px"
-            ><i class="el-icon-switch-button"></i>退出</el-menu-item
+          <span index="2" @click="logOut" style="width: 89px" class="logOutA"
+            ><i
+              class="el-icon-switch-button"
+              style="color: #909399; margin-right: 8px; font-size: 17px"
+            ></i
+            >退出</span
           >
         </el-menu>
       </el-header>
@@ -76,7 +79,6 @@
                 >
               </el-submenu>
             </div>
-
             <!-- 导航二
             <el-submenu index="3">
               <template slot="title">
@@ -102,7 +104,7 @@
 <script>
 import { menusApi } from '../../api/index.js'
 import { mapState } from 'vuex'
-import defaultImg from '@/assets/images/el.jpeg'
+import defaultImg from '@/assets/images/avatar.jpg'
 export default {
   data () {
     return {
@@ -114,10 +116,13 @@ export default {
   created () {
     this.$store.dispatch('userInfoHandle')
     this.getMenus()
+    this.$router.push('/home')
   },
+
   computed: {
     ...mapState(['userInfo'])
   },
+
   methods: {
     async logOut () {
       const sesult = await this.$confirm('您要退出首页, 是否继续?', '提示', {
@@ -131,6 +136,8 @@ export default {
         this.$store.commit('delToken')
         localStorage.clear()
         this.$router.push('/login')
+      } else {
+        return false
       }
     },
     handleOpen (key, keyPath) {
@@ -142,13 +149,15 @@ export default {
     async getMenus () {
       const res = await menusApi()
       this.menus = res.data.data
-    }
+    },
+    mounted () {}
   }
 }
 </script>
 <style lang='less' scoped>
 .main-container {
   height: 100%;
+  height: 100vh;
   .el-header,
   .el-aside {
     background-color: #23262e;
@@ -166,6 +175,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 40px !important;
   }
 }
 .aside-info {
@@ -193,8 +203,17 @@ is-active,
   margin-right: 10px;
   object-fit: cover;
 }
-
-.el-container {
-  height: 100vh;
+.logOutA {
+  width: 89px;
+  display: inline-block;
+  height: 60px;
+  text-align: center;
+  color: #fff;
+  line-height: 60px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.logOutA:hover {
+  background-color: #1c1e25;
 }
 </style>

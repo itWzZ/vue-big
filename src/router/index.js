@@ -11,15 +11,15 @@ const routes = [
     component: () => import('../views/Layout/index.vue'),
     children: [
       {
-        path: '/user-info',
+        path: 'user-info',
         component: () => import('../views/user/userinfo.vue')
       },
       {
-        path: '/user-avatar',
+        path: 'user-avatar',
         component: () => import('../views/user/changeavatar.vue')
       },
       {
-        path: '/user-pwd',
+        path: 'user-pwd',
         component: () => import('../views/user/resetpwd.vue')
       },
       {

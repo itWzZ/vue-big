@@ -50,7 +50,7 @@
 
 <script>
 import { upDateAvatarApi } from '../../api'
-import defaultImg from '@/assets/images/el.jpeg'
+import defaultImg from '@/assets/images/avatar.jpg'
 export default {
   data () {
     return {

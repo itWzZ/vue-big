@@ -14,7 +14,7 @@ let loadingInstance = null
 request.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
-    // 设置只要请求地址有/my 的话 就加上仓库中的token
+    // 设置只要请求地址有 /my 的话 就加上仓库中的token
     if (config.url.startsWith('/my')) {
       config.headers.Authorization = store.state.token
     }

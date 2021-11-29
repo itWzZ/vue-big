@@ -2,18 +2,19 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { userinfoApi } from '../api/index.js'
 // 1. 导入包
-import createPersistedState from 'vuex-persistedstate'
+// import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 export default new Vuex.Store({
-  plugins: [createPersistedState()],
+  // plugins: [createPersistedState()],
   state: {
-    token: '',
+    token: sessionStorage.getItem('token'),
     userInfo: {}
   },
   mutations: {
     // 将token保存到仓库中
     updateToken (state, token) {
+      sessionStorage.setItem('token', token)
       state.token = token
     },
     // 退出首页时,将浏览器中的token清除

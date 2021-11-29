@@ -59,3 +59,25 @@ export const getCateInfoApi = (params) => {
     params
   })
 }
+/**
+ * @description: 发布新文章
+ * @return {Promise}
+ **/
+export const addArticleApi = (data) => {
+  return request({
+    method: 'POST',
+    url: '/my/article/add',
+    data
+  })
+}
+/**
+ * @description: 根据 id 删除文章数据
+ * @return {Promise}
+ **/
+export const delArticleApi = (data) => {
+  return request({
+    method: 'DELETE',
+    url: '/my/article/info',
+    params: data
+  })
+}

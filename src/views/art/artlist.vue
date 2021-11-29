@@ -36,10 +36,7 @@
             <el-button type="info" @click="reSubmit">重置</el-button>
           </el-form-item>
         </el-form>
-        <el-button
-          style="height: 38px"
-          type="primary"
-          @click="dialogFormVisible = true"
+        <el-button style="height: 38px" type="primary" @click="addArt"
           >发布文章</el-button
         >
       </div>
@@ -87,8 +84,13 @@
       <!-- 面包屑结束 -->
     </el-card>
     <!-- 添加文章对话框 -->
-    <el-dialog title="发表文章" :visible.sync="dialogFormVisible" fullscreen>
-      <pubArt :cateLis="cateLis"></pubArt>
+    <el-dialog
+      title="发表文章"
+      :visible.sync="dialogFormVisible"
+      fullscreen
+      :before-close="handleClose"
+    >
+      <pubArt :cateLis="cateLis" @success="success" ref="pubArt"></pubArt>
     </el-dialog>
     <!-- 添加文章对话框 -->
   </div>
@@ -96,7 +98,7 @@
 
 <script>
 import dayjs from 'dayjs'
-import { getArtListApi, getCateInfoApi } from '../../api/art.js'
+import { getArtListApi, getCateInfoApi, delArticleApi } from '../../api/art.js'
 export default {
   name: 'artlist',
   data () {
@@ -120,6 +122,24 @@ export default {
   computed: {},
 
   methods: {
+    handleClose () {
+      this.$confirm('次操作将导致文章信息丢失,是否继续', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then((_) => {
+          console.log(this.$refs.pubArt)
+          this.$refs.pubArt.initForm()
+          this.dialogFormVisible = false
+        })
+        .catch((_) => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
+    },
     // 格式化时间
     forMateTime (time) {
       return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
@@ -153,8 +173,17 @@ export default {
     handleEdit (index, row) {
       // console.log(index, row)
     },
-    handleDelete (index, row) {
+    // 删除按钮
+    async handleDelete (index, row) {
       // console.log(index, row)
+      const res = await delArticleApi({ id: row.id })
+      if (res.data.code === 0) {
+        this.$message({
+          type: 'success',
+          message: res.data.message
+        })
+        this.reSubmit()
+      }
     },
     /* 触发分页事件 */
     handleSizeChange (val) {
@@ -164,6 +193,14 @@ export default {
     handleCurrentChange (val) {
       this.formInline.pagenum = val
       this.getArticle()
+    },
+    success () {
+      this.dialogFormVisible = false
+      this.getArticle()
+    },
+    // 发布文章
+    addArt () {
+      this.dialogFormVisible = true
     }
   }
 }

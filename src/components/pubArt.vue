@@ -44,7 +44,7 @@
         prop="cover_img"
       >
         <img
-          :src="form.cover_img"
+          :src="cover"
           alt=""
           style="width: 400px; height: 280px; object-fit: cover"
           @click="choose"
@@ -60,14 +60,15 @@
       </el-form-item>
       <!-- 上传封面 -->
       <el-form-item :label-width="formLabelWidth">
-        <el-button type="primary">发 布</el-button>
-        <el-button type="info">存为草稿</el-button>
+        <el-button type="primary" @click="pub('已发布')">发 布</el-button>
+        <el-button type="info" @click="pub('草稿')">存为草稿</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+import { addArticleApi } from '@/api/art.js'
 export default {
   name: 'pubArt',
   props: ['cateLis'],
@@ -75,12 +76,13 @@ export default {
     return {
       dialogFormVisible: false,
       formLabelWidth: '100px',
+      cover: require('../assets/images/cover.jpg'),
       form: {
         title: '',
         cate_id: '',
         content: '',
         state: '',
-        cover_img: require('../assets/images/cover.jpg')
+        cover_img: null
       },
       rules: {
         title: [
@@ -90,9 +92,9 @@ export default {
             trigger: 'blur'
           },
           {
-            min: 3,
-            max: 10,
-            message: '长度在 3 到 10 个字符',
+            min: 1,
+            max: 30,
+            message: '长度在 1 到 30 个字符',
             trigger: 'blur'
           }
         ],
@@ -107,10 +109,19 @@ export default {
   created () {},
   computed: {},
   methods: {
+    initForm () {
+      this.form = {
+        title: '',
+        cate_id: '',
+        content: '',
+        state: '',
+        cover_img: ''
+      }
+      this.cover = require('../assets/images/cover.jpg')
+    },
     choose () {
       this.$refs.ipt.click()
     },
-
     changeImg (e) {
       const file = e.target.files[0]
       if (e.target.files.length === 0) {
@@ -126,7 +137,31 @@ export default {
         })
       }
       const img = URL.createObjectURL(file)
-      this.form.cover_img = img
+      this.form.cover_img = file
+      this.cover = img
+    },
+    async pub (state) {
+      this.form.state = state
+      const fd = new FormData()
+      fd.append('title', this.form.title)
+      fd.append('cate_id', this.form.cate_id)
+      fd.append('content', this.form.content)
+      fd.append('state', this.form.state)
+      fd.append('cover_img', this.form.cover_img)
+      const res = await addArticleApi(fd)
+      if (res.data.code === 0) {
+        this.initForm()
+        this.$message({
+          type: 'success',
+          message: res.data.message
+        })
+        this.$emit('success')
+      } else {
+        this.$message({
+          type: 'error',
+          message: res.data.message
+        })
+      }
     }
   }
 }

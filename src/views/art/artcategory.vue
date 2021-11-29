@@ -16,9 +16,8 @@
       <el-table :data="tableData" style="width: 100%" border stripe>
         <el-table-column label="序号" width="100" prop="id"> </el-table-column>
         <el-table-column label="分类名称" prop="cate_name"> </el-table-column>
-        <el-table-column label="分类别名" prop="cate_alias">
-        </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="分类别名" prop="cate_alias"> </el-table-column>
+        <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
               >编辑</el-button
